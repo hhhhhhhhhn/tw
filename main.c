@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <ncurses.h>
 #include <stdio.h>
+#include <locale.h>
 
 #define PATH "/tmp/tw"
 #define D_SIZE 8
@@ -11,6 +12,7 @@ int main(int argc, char** argv) {
 		temp_len = 10;
 	}
 
+	setlocale(LC_ALL, "");
 	initscr();
 	cbreak();
 	noecho();
@@ -21,7 +23,7 @@ int main(int argc, char** argv) {
 	int output_used = 0;
 	int output_len = D_SIZE;
 
-	char* temp = malloc(sizeof(char) * temp_len);
+	char* temp = malloc(sizeof(char) * temp_len + sizeof(char)); // for \0
 	if(temp == NULL) exit(1);
 	int temp_used = 0;
 
@@ -43,7 +45,7 @@ int main(int argc, char** argv) {
 				temp_used = 0;
 				break;
 			case KEY_BACKSPACE:
-				temp_used--;
+				if(temp_used != 0) temp_used--;
 				break;
 			case KEY_UP:
 			case KEY_DOWN:
@@ -69,7 +71,8 @@ int main(int argc, char** argv) {
 		}
 		move(0, 0);
 		clrtoeol();
-		for(int i = 0; i < temp_used; i++) addch(temp[i]);
+		temp[temp_used] = '\0';
+		printw(temp);
 		refresh();
 	}
 	while(output_len < output_used + temp_used + 1) {

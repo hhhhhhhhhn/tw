@@ -1,5 +1,5 @@
 tw:
-	cc -lncurses -O3 -o tw main.c
+	cc -lncursesw -O3 -o tw main.c
 install: tw
 	mv tw /usr/local/bin/tw
 uninstall:
