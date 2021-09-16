@@ -1,0 +1,5 @@
+package "tw"
+version "1.0"
+
+option "output"  o "Path of the output file"         string default="tw" no
+option "display" d "Number of characters in display" int    default="10" no

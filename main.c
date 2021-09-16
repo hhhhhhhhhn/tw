@@ -2,14 +2,20 @@
 #include <ncurses.h>
 #include <stdio.h>
 #include <locale.h>
+#include "cmdline.h"
 
-#define PATH "/tmp/tw"
 #define D_SIZE 8
 
 int main(int argc, char** argv) {
-	int temp_len;
-	if(argc == 1 || (temp_len = atoi(argv[1])) < 1) {
-		temp_len = 10;
+	struct gengetopt_args_info args;
+	cmdline_parser(argc, argv, &args);
+	int temp_len = args.display_arg;
+	char* path = args.output_arg;
+
+	FILE* file_ptr = fopen(path, "w");
+	if (file_ptr == NULL) {
+		fprintf(stderr, "could not open file \"%s\"\n", path);
+		return 1;
 	}
 
 	setlocale(LC_ALL, "");
@@ -90,7 +96,6 @@ int main(int argc, char** argv) {
 		output = realloc(output, output_len * sizeof(char));
 	}
 	output[output_used] = '\0';
-	FILE* file_ptr = fopen(PATH, "w");
 	fputs(output, file_ptr);
 	fclose(file_ptr);
 }
